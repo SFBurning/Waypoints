@@ -1,8 +1,9 @@
 // Pull the list of targets. 
 // This should be the only line that needs to be cobbled together in the script
 l = thisComp.layer("Light Targets");
+l2 = thisComp.layer("Camera CTRL");
 // On that layer, grab the light position slider
-curLightCtrl = l.effect("Light Position")("Slider");
+curLightCtrl = l2.effect("Light Position")("Slider");
 // We don't want to effect the z-value of the light. We'll simply grab it here for consistency later on.
 z = thisProperty[2];
 
@@ -11,7 +12,7 @@ var d = false;
 // This assumes two control layers and at least one target layer.
 // AE Indexing starts from 1, so 3 really is the third layer
 // Here we start at 2 because the first "try" will take us up to the appropriate point
-var numTargets = 2;
+var numTargets = 0;
 // Determine the number of layers to navigate
 while (d == false) {
     // Try to grab the effect of index ("NumTargets"). 
@@ -19,9 +20,9 @@ while (d == false) {
         numTargets++;
         t = l.effect(numTargets);
     } catch (err) {
-        // Subtract 3 from the total, to eliminate light position and dimmer controls AND the extra one that we added 
+        // The actual value is one less; we already added 1 to the tally before erroring out
         // The try will not error until it reaches the 2nd line, by which point numTargets has already changed  
-        numTargets = numTargets - 3;
+        numTargets = numTargets - 1;
         d = true;
     }
 }
@@ -30,7 +31,7 @@ var waypoints = new Array();
 // Start with no layers, but establish this as a global variable
 var curLayer = null;
 // Loop through each of the layer targets available in the effects panel
-for (var i = 3; i < numTargets + 3; i++) {
+for (var i = 1; i < numTargets + 1; i++) {
     // Grab the layer reference by the effects panel
     curLayer = l.effect(i)("Layer");
     // Push the x and y values of the current layer into the 2D array "waypoints"
