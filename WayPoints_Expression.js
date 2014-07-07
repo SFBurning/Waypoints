@@ -1,3 +1,5 @@
+// Git Test
+
 // Pull the list of targets. 
 // This should be the only line that needs to be cobbled together in the script
 l = thisComp.layer("Light Targets");
