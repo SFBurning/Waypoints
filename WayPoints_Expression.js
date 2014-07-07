@@ -1,5 +1,3 @@
-// Git Test
-
 // Pull the list of targets. 
 // This should be the only line that needs to be cobbled together in the script
 l = thisComp.layer("Light Targets");
@@ -44,7 +42,7 @@ for (var i = 1; i < numTargets + 1; i++) {
     waypoints.push([curLayer.position[0], curLayer.position[1]]);
 }
 // Check to see that we have at least 2 keys-- otherwise, interpolation is pointless
-if (curLightCtrl.numKeys > 1) {
+if (curLightCtrl.numKeys > 0) {
     // Pull in the nearest keys of the light position control
     nk = curLightCtrl.nearestKey(time);
     // Check if we are coming or going
