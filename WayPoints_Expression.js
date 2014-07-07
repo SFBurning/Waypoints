@@ -83,11 +83,19 @@ if (curLightCtrl.numKeys > 1) {
     var nextKeyValue = Math.round(nextKey.value);
 
     minIndex = clamp(prevKeyValue, 0, numTargets - 1);
-    maxIndex = clamp(nextKeyValue, 0, numTargets - 1);
-
-    // Now interpolate between the x value of the layer at the previous key and the next key over time
-    x = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][0], waypoints[maxIndex][0]);
-    y = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][1], waypoints[maxIndex][1]);
+    maxIndex = clamp(nextKeyValue, 0, numTargets);
+    var userInterpolate = l2.effect("Interpolation")("Checkbox");
+    // Check to see if this frame needs to be interpolated 
+    if (userInterpolate == 1) {
+        // Now interpolate between the x value of the layer at the previous key and the next key over time
+        x = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][0], waypoints[maxIndex][0]);
+        y = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][1], waypoints[maxIndex][1]);
+    }
+    // If there is no interpolation, just use the previous key 
+    else {
+        x = waypoints[minIndex][0];
+        y = waypoints[minIndex][1];
+    }
     // Return the interpolated array. Woohoo!
     [x, y, z];
 } else {
