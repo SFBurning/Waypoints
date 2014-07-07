@@ -30,6 +30,10 @@ while (d == false) {
 }
 // We'll need to fill this array with the x and y positions of the layers on each frame.
 var waypoints = new Array();
+// push the comp width and height to the first location in the array.
+// A workaround because AE keys are 1-indexed, not 0-indexed
+waypoints.push([thisComp.width / 2, thisComp.height / 2]);
+
 // Start with no layers, but establish this as a global variable
 var curLayer = null;
 // Loop through each of the layer targets available in the effects panel
@@ -89,8 +93,8 @@ if (curLightCtrl.numKeys > 1) {
 } else {
     // If there's nothing to interpolate (no more than one control point), simply return the x and y values for the currently selected layer;
     try {
-        x = waypoints[0, 0];
-        y = waypoints[0, 1];
+        x = waypoints[1, 0];
+        y = waypoints[1, 1];
         // Return the final position. Party all the time!
         [x, y, z]
     } catch (err) {
