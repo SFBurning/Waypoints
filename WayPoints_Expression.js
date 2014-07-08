@@ -1,5 +1,3 @@
-// Git Test
-
 // Pull the list of targets. 
 // This should be the only line that needs to be cobbled together in the script
 l = thisComp.layer("Light Targets");
@@ -30,6 +28,10 @@ while (d == false) {
 }
 // We'll need to fill this array with the x and y positions of the layers on each frame.
 var waypoints = new Array();
+// push the comp width and height to the first location in the array.
+// A workaround because AE keys are 1-indexed, not 0-indexed
+waypoints.push([thisComp.width / 2, thisComp.height / 2]);
+
 // Start with no layers, but establish this as a global variable
 var curLayer = null;
 // Loop through each of the layer targets available in the effects panel
@@ -40,7 +42,7 @@ for (var i = 1; i < numTargets + 1; i++) {
     waypoints.push([curLayer.position[0], curLayer.position[1]]);
 }
 // Check to see that we have at least 2 keys-- otherwise, interpolation is pointless
-if (curLightCtrl.numKeys > 1) {
+if (curLightCtrl.numKeys > 0) {
     // Pull in the nearest keys of the light position control
     nk = curLightCtrl.nearestKey(time);
     // Check if we are coming or going
@@ -79,18 +81,26 @@ if (curLightCtrl.numKeys > 1) {
     var nextKeyValue = Math.round(nextKey.value);
 
     minIndex = clamp(prevKeyValue, 0, numTargets - 1);
-    maxIndex = clamp(nextKeyValue, 0, numTargets - 1);
-
-    // Now interpolate between the x value of the layer at the previous key and the next key over time
-    x = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][0], waypoints[maxIndex][0]);
-    y = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][1], waypoints[maxIndex][1]);
+    maxIndex = clamp(nextKeyValue, 0, numTargets);
+    var userInterpolate = l2.effect("Interpolation")("Checkbox");
+    // Check to see if this frame needs to be interpolated 
+    if (userInterpolate == 1) {
+        // Now interpolate between the x value of the layer at the previous key and the next key over time
+        x = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][0], waypoints[maxIndex][0]);
+        y = linear(time, prevKey.time, nextKey.time, waypoints[minIndex][1], waypoints[maxIndex][1]);
+    }
+    // If there is no interpolation, just use the previous key 
+    else {
+        x = waypoints[minIndex][0];
+        y = waypoints[minIndex][1];
+    }
     // Return the interpolated array. Woohoo!
     [x, y, z];
 } else {
     // If there's nothing to interpolate (no more than one control point), simply return the x and y values for the currently selected layer;
     try {
-        x = waypoints[0, 0];
-        y = waypoints[0, 1];
+        x = waypoints[1, 0];
+        y = waypoints[1, 1];
         // Return the final position. Party all the time!
         [x, y, z]
     } catch (err) {
