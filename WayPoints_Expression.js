@@ -80,7 +80,7 @@ if (curLightCtrl.numKeys > 0) {
     var prevKeyValue = Math.round(prevKey.value);
     var nextKeyValue = Math.round(nextKey.value);
 
-    minIndex = clamp(prevKeyValue, 0, numTargets - 1);
+    minIndex = clamp(prevKeyValue, 0, numTargets);
     maxIndex = clamp(nextKeyValue, 0, numTargets);
     var userInterpolate = l2.effect("Interpolation")("Checkbox");
     // Check to see if this frame needs to be interpolated 
